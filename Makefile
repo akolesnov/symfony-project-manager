@@ -1,5 +1,6 @@
 up: docker-up
 init: docker-down docker-pull docker-build docker-up
+test: manager-test
 
 docker-up:
 	docker-compose up -d
@@ -17,6 +18,9 @@ manager-init: manager-composer-install
 
 manager-composer-install:
 	docker-compose run --rm manager-php-cli composer install
+
+manager-test:
+	docker-compose run --rm manager-php-cli php bin/phpunit
 
 cli:
 	docker-compose run --rm manager-php-cli php bin/app.php
