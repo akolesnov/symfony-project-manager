@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Model\User\Entity\User;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use DomainException;
 
 class User
 {
@@ -12,35 +13,21 @@ class User
     private const STATUS_WAIT = 'wait';
     private const STATUS_ACTIVE = 'active';
 
-    /**
-     * @var Id
-     */
-    private $id;
-    /**
-     * @var DateTimeImmutable
-     */
-    private $date;
-    /**
-     * @var Email|null
-     */
-    private $email;
-    /**
-     * @var string|null
-     */
-    private $passwordHash;
-    /**
-     * @var string|null
-     */
-    private $confirmToken;
-    /**
-     * @var Network[]|ArrayCollection
-     */
-    private $networks;
+    private Id $id;
 
-    /**
-     * @var string
-     */
-    private $status;
+    private \DateTimeImmutable $date;
+
+    private ?Email $email;
+
+    private ?string $passwordHash;
+
+    private ?string $confirmToken;
+
+    private ArrayCOllection $networks;
+
+    private ?ResetToken $resetToken;
+    
+    private string $status;
 
     public function __construct(Id $id, \DateTimeImmutable $date)
     {
@@ -80,6 +67,17 @@ class User
             }
         }
         $this->networks->add(new Network($this, $network, $identity));
+    }
+
+    public function requestPasswordReset(ResetToken $token, \DateTimeImmutable $date): void
+    {
+        if (!$this->email) {
+            throw new \DomainException('Email is not specified.');
+        }
+        if ($this->resetToken && !$this->resetToken->isExpiredTo($date)) {
+            throw new DomainException('Resetting is already requested.');
+        }
+        $this->resetToken = $token;
     }
 
     public function isNew(): bool
@@ -130,6 +128,11 @@ class User
     public function getConfirmToken()
     {
         return $this->confirmToken;
+    }
+
+    public function getResetToken(): ?ResetToken
+    {
+        return $this->resetToken;
     }
 
     /**

@@ -1,7 +1,7 @@
 doctrine:
     dbal:
         driver: 'pdo_pgsql'
-        server_version: '11.2'
+        server_version: '14'
         charset: utf8
         default_table_options:
             charset: utf8
