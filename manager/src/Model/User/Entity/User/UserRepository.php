@@ -4,7 +4,9 @@ namespace App\Model\User\Entity\User;
 
 interface UserRepository
 {
-    public function findByConfirmToken(string $token);
+    public function findByConfirmToken(string $token): ?User;
+
+    public function findByResetToken(string $token): ?User;
 
     public function getByEmail(Email $email): User;
     
