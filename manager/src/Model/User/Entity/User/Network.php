@@ -8,22 +8,13 @@ use Ramsey\Uuid\Uuid;
 
 class Network
 {
-    /**
-     * @var string
-     */
-    private $id;
-    /**
-     * @var User
-     */
-    private $user;
-    /**
-     * @var string
-     */
-    private $network;
-    /**
-     * @var string
-     */
-    private $identity;
+    private string $id;
+
+    private User $user;
+
+    private string $network;
+
+    private string $identity;
 
     public function __construct(User $user, string $network, string $identity)
     {
