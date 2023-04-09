@@ -1,11 +1,15 @@
+parameters:
+    env(DATABASE_URL): ''
+
 doctrine:
     dbal:
         driver: 'pdo_pgsql'
-        server_version: '14'
+        server_version: '15'
         charset: utf8
         default_table_options:
             charset: utf8
             collate: -
+
         url: '%env(resolve:DATABASE_URL)%'
 
         types:
@@ -20,7 +24,7 @@ doctrine:
         mappings:
             User:
                 is_bundle: false
-                type: annotation
+                type: attribute
                 dir: '%kernel.project_dir%/src/Model/User/Entity'
                 prefix: 'App\Model\User\Entity'
                 alias: User
