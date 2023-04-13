@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace App\Model\User\UseCase\SignUp\Request;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 class Command
 {
-    /**
-     * @var string
-     */
-    public $email;
+    #[Assert\NotBlank()]
+    #[Assert\Email()]
+    public string $email;
 
-    /**
-     * @var string
-     */
-    public $password;
+    #[Assert\NotBlank()]
+    #[Assert\Length(min: 16)]
+    public string $password;
 }
