@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Model\User\Entity\User;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -45,7 +46,7 @@ class User
     private string $status;
 
     #[ORM\OneToMany(targetEntity: Network::class, mappedBy: 'user', orphanRemoval: true, cascade: ['persist'])]
-    private ArrayCOllection $networks;
+    private Collection $networks;
 
     private function __construct(Id $id, \DateTimeImmutable $date)
     {
