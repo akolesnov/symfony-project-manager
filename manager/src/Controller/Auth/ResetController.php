@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Auth;
 
 use App\Model\User\UseCase\Reset;
+use App\ReadModel\User\UserFetcer;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,11 +14,11 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ResetController extends AbstractController
 {
-    private $loggger;
+    private $logger;
 
     public function __construct(LoggerInterface $logger)
     {
-        $this->loggger = $logger;
+        $this->logger = $logger;
     }
 
     #[Route('/reset', name: 'auth.reset')]
@@ -31,13 +32,45 @@ class ResetController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $handler->handle($command);
-            $this->addFlash('success', 'Chek your email.');
+                $this->addFlash('success', 'Chek your email.');
             return $this->redirectToRoute('home');
             } catch (\DomainException $e) {
-                $this->loggger->error($e->getMessage(), ['exception' => $e]);
+                $this->logger->error($e->getMessage(), ['exception' => $e]);
                 $this->addFlash('error', $e->getMessage());
             }
-
         }
+
+        return $this->render('app/auth/reset/request.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/reset/{token}', name: 'auth.reset.reset')]
+    public function reset(string $token, Request $request, Reset\Reset\Handler $handler, UserFetcer $users): Response
+    {
+        if (!$users->existsByResetToken($token)) {
+            $this->addFlash('error', 'Incorrect or already confirmed token');
+            return $this->redirectToRoute('home');
+        }
+
+        $command = new Reset\Reset\Command($token);
+
+        $form = $this->createForm(Reset\Reset\Form::class, $command);
+        $form->handleRequest($request);
+
+        if ($form->isValid() && $form->isSubmitted()) {
+            try {
+                $handler->handle($command);
+                $this->addFlash('succes', 'Password is successfully changed.');
+                return $this->redirectToRoute('home');
+            } catch (\DomainException $e) {
+                $this->logger->error($e->getMessage(), ['exception' => $e]);
+                $this->addFlash('error', $e->getMessage());
+            }
+        }
+
+        return $this->render('app/auth/reset/reset.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 }
