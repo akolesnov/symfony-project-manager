@@ -20,6 +20,7 @@ class SignUpController extends AbstractController
         $this->logger = $logger;
     }
 
+    #[Route('/signup', name: 'auth.signup')]
     public function request(Request $request, Signup\Request\Handler $handler): Response
     {
         $command = new Signup\Request\Command();
@@ -43,6 +44,7 @@ class SignUpController extends AbstractController
         ]);
     }
 
+    #[Route('/signup/{token}', name: 'auth.signup.confirm')]
     public function confirm(string $token, Signup\Confirm\Handler $handler): Response
     {
         $command = new SignUp\Confirm\Command($token);
