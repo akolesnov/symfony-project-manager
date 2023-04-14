@@ -26,5 +26,3 @@ services:
     App\Model\User\Service\ResetTokenizer:
         factory: 'App\Container\Model\User\Service\ResetTokenizerFactory::create'
         arguments: ['PT1H']
-
-    App\Model\Flusher:

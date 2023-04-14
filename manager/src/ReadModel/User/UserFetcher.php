@@ -6,7 +6,7 @@ namespace App\ReadModel\User;
 
 use Doctrine\DBAL\Connection;
 
-class UserFetcer
+class UserFetcher
 {
     private $connection;
 

@@ -18,6 +18,7 @@ services:
             - ./manager:/app
         depends_on:
             - manager-postgres
+            - mailer
     manager-php-cli:
         build:
             context: ./manager/docker/development
@@ -27,6 +28,7 @@ services:
             - composer:/root/.composer/cache
         depends_on:
             - manager-postgres
+            - mailer
     manager-postgres:
         image: postgres:15-alpine
         volumes:
@@ -38,9 +40,10 @@ services:
         ports:
             - "54321:5432"
     mailer:
-      image: mailhog/mailhog
-      ports:
-        - '8081:8025'
+        image: mailhog/mailhog
+        ports:
+            - "8081:8025"
+
 volumes:
     manager-postgres:
     composer:
