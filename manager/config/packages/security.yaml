@@ -5,19 +5,14 @@ security:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
-        # used to reload user from session & other features (e.g. switch_user)
-        app_user_provider:
-            entity:
-                class: App\Entity\User
-                property: email
+        fetcher:
+            id: App\Security\UserProvider
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            form_login:
-                login_path: app_login
-                check_path: app_login
+            #form_login: true
             lazy: true
             remember_me:
                 secret: '%kernel.secret%'
@@ -25,7 +20,8 @@ security:
                 path: /
             logout:
                 path: app_logout
-            # custom_authenticator: App\Security\LoginFormAuthenticator;
+            custom_authenticators:
+                - App\Security\LoginFormAuthenticator
 
     role_hierarchy:
         ROLE_ADMIN: [ROLE_USER]

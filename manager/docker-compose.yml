@@ -43,6 +43,7 @@ services:
         image: mailhog/mailhog
         ports:
             - "8081:8025"
+            - "1025:1025"
 
 volumes:
     manager-postgres:
