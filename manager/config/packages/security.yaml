@@ -12,8 +12,8 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            #form_login: true
             lazy: true
+            user_checker: App\Security\UserChecker
             remember_me:
                 secret: '%kernel.secret%'
                 lifetime: 604800
