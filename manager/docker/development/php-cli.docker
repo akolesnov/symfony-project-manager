@@ -2,11 +2,7 @@ FROM php:8.1-cli
 
 RUN apt-get update && apt-get install -y libpq-dev unzip \
     && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
-    && docker-php-ext-install pdo_pgsql \
-    && pecl install xdebug-3.2.1 \
-    && docker-php-ext-enable xdebug
-
-COPY ./php/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+    && docker-php-ext-install pdo_pgsql
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/bin --filename=composer --quiet
 
