@@ -24,10 +24,15 @@
             </label>
         </div>
 
+        <hr />
+
         <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
         <div class="form-group">
             <button class="btn btn-primary" type="submit">Log In</button>
         </div>
+        <p>
+            <a href="{{ path('oauth.discord') }}" class="btn btn-primary">Log In via Discord</a>
+        </p>
     </form>
 {% endblock %}

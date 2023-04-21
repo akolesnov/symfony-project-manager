@@ -22,6 +22,8 @@ security:
                 path: app_logout
             custom_authenticators:
                 - App\Security\LoginFormAuthenticator
+                - App\Security\OAuth\DiscordAuthenticator
+            entry_point: App\Security\LoginFormAuthenticator         
             provider: fetcher
 
     role_hierarchy:
@@ -29,6 +31,7 @@ security:
 
     access_control:
         - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/oauth, roles: PUBLIC_ACCESS }
         - { path: ^/signup, roles: PUBLIC_ACCESS }
         - { path: ^/reset, roles: PUBLIC_ACCESS }
         - { path: ^/, roles: ROLE_USER }

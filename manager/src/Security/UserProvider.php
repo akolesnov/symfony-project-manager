@@ -23,7 +23,7 @@ class UserProvider implements UserProviderInterface
     public function loadUserByIdentifier(string $username): UserInterface
     {
         $user = $this->loadUser($username);
-        return self::identityByUser($user);
+        return self::identityByUser($user, $username);
     }
 
     public function supportsClass(string $class): bool
@@ -31,29 +31,36 @@ class UserProvider implements UserProviderInterface
         return $class === UserIdentity::class;
     }
 
-    public function refreshUser(UserInterface $user)
+    public function refreshUser(UserInterface $identity)
     {
-        if (!$user instanceof UserIdentity) {
-            throw new UnsupportedUserException('Invalid user class ' . \get_class($user));
+        if (!$identity instanceof UserIdentity) {
+            throw new UnsupportedUserException('Invalid user class ' . \get_class($identity));
         }
-        $user = $this->loadUser($user->getUsername());
-        return self::identityByUser($user);
+        $user = $this->loadUser($identity->getUsername());
+        return self::identityByUser($user, $identity->getUsername());
     }
 
     private function loadUser($username): AuthView
     {
-        if (!$user = $this->users->findForAuth($username)) {
-            throw new UserNotFoundException('');
+        $chunks = explode(':', $username);
+
+        if (\count($chunks) == 2 && $user = $this->users->findForAuthByNetwork($chunks[0], $chunks[1])) {
+            return $user;
         }
-        return $user;
+
+        if ($user = $this->users->findForAuthByEmail($username)) {
+            return $user;
+        }
+
+        throw new UserNotFoundException('');
     }
 
-    private static function identityByUser(AuthView $user): UserIdentity
+    private static function identityByUser(AuthView $user, string $username): UserIdentity
     {
         return new UserIdentity(
             $user->id,
-            $user->email,
-            $user->password_hash,
+            $username,
+            $user->password_hash ?: '',
             $user->role,
             $user->status
         );
